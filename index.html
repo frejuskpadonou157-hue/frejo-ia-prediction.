@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07140e">
+<title>FREJO IA PRÉDICTION</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07140e;color:#f1fff5;font-family:Arial,sans-serif}
+header{padding:22px;background:#10271a;border-bottom:2px solid #20c66b}
+h1{color:#35e782;margin:0;font-size:24px}
+header p{color:#b6d9c3;margin-bottom:0}
+nav{display:flex;gap:8px;padding:12px;overflow:auto}
+button{background:#173b27;color:white;border:1px solid #286b43;padding:11px 15px;border-radius:9px;cursor:pointer}
+button.active,.main{background:#19a957;color:#06150c;font-weight:bold}
+main{padding:14px;max-width:850px;margin:auto}
+section{display:none}
+section.show{display:block}
+.card{background:#10271a;border:1px solid #24583a;padding:16px;border-radius:13px;margin:12px 0}
+h2{color:#42e98a}
+small,.muted{color:#a8c8b3}
+.stat{font-size:25px;color:#42e98a;font-weight:bold}
+input,textarea,select{width:100%;padding:12px;margin:7px 0;background:#07140e;color:white;border:1px solid #39744e;border-radius:8px}
+textarea{min-height:100px}
+.notice{font-size:12px;color:#b6d9c3;line-height:1.5}
+footer{text-align:center;padding:25px;color:#8eae99}
+</style>
+</head>
+<body>
+<header>
+<h1>⚡ FREJO IA PRÉDICTION</h1>
+<p>Centre d'analyse et de statistiques sportives</p>
+</header>
+<nav>
+<button class="active" onclick="showTab('accueil',this)">Accueil</button>
+<button onclick="showTab('matchs',this)">Matchs</button>
+<button onclick="showTab('analyses',this)">Analyses</button>
+<button onclick="showTab('performances',this)">Performances</button>
+</nav>
+<main>
+<section id="accueil" class="show">
+<div class="card">
+<h2>Bienvenue sur FREJO IA</h2>
+<p>Une plateforme pour étudier les performances des équipes et comprendre les statistiques sportives.</p>
+</div>
+<div class="card">
+<p class="muted">Matchs dans la démonstration</p>
+<div class="stat">03</div>
+</div>
+<div class="card">
+<h2>Nos fonctionnalités</h2>
+<p>📊 Statistiques des équipes</p>
+<p>⚽ Historique des rencontres</p>
+<p>🧠 Analyses automatiques indicatives</p>
+<p>✍️ Notes et analyses manuelles</p>
+</div>
+</section>
+
+<section id="matchs">
+<h2>Matchs de démonstration</h2>
+<p class="notice">Ces rencontres sont fictives et servent uniquement à présenter l'application.</p>
+<div class="card"><h3>Équipe A — Équipe B</h3><p>Forme récente : 3 victoires / 2 défaites</p><small>Exemple fictif</small></div>
+<div class="card"><h3>Équipe C — Équipe D</h3><p>Forme récente : 2 victoires / 2 nuls / 1 défaite</p><small>Exemple fictif</small></div>
+<div class="card"><h3>Équipe E — Équipe F</h3><p>Forme récente : 4 victoires / 1 défaite</p><small>Exemple fictif</small></div>
+</section>
+
+<section id="analyses">
+<h2>Analyses sportives</h2>
+<div class="card">
+<h3>Analyse automatique (démo)</h3>
+<label>Choisir une rencontre</label>
+<select id="match">
+<option>Équipe A contre Équipe B</option>
+<option>Équipe C contre Équipe D</option>
+<option>Équipe E contre Équipe F</option>
+</select>
+<button class="main" onclick="analyser()">Lancer l'analyse</button>
+<p id="resultat" class="notice">L'analyse illustrative apparaîtra ici.</p>
+</div>
+<div class="card">
+<h3>Ajouter une analyse manuelle</h3>
+<input id="titre" placeholder="Titre de l'analyse">
+<textarea id="note" placeholder="Écris ton observation sportive..."></textarea>
+<button class="main" onclick="ajouter()">Enregistrer sur cet appareil</button>
+<div id="notes"></div>
+</div>
+</section>
+
+<section id="performances">
+<h2>Suivi des performances</h2>
+<div class="card">
+<p>Les résultats réels pourront être ajoutés ici ultérieurement.</p>
+<p class="notice">Aucune statistique réelle n'est encore connectée. Les données de cette version sont des exemples.</p>
+</div>
+</section>
+</main>
+<footer>FREJO IA PRÉDICTION · Version prototype</footer>
+<script>
+function showTab(id,btn){
+document.querySelectorAll('main section').forEach(s=>s.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+function analyser(){
+let m=document.getElementById('match').value;
+document.getElementById('resultat').textContent=
+"Analyse de démonstration pour "+m+". Les données réelles et un modèle IA ne sont pas encore connectés. Vérifie toujours les statistiques et leurs sources.";
+}
+function ajouter(){
+let t=document.getElementById('titre').value.trim();
+let n=document.getElementById('note').value.trim();
+if(!t||!n){alert("Remplis le titre et l'analyse.");return;}
+let notes=JSON.parse(localStorage.getItem('frejoNotes')||'[]');
+notes.unshift({t,n});
+localStorage.setItem('frejoNotes',JSON.stringify(notes));
+document.getElementById('titre').value='';
+document.getElementById('note').value='';
+afficherNotes();
+}
+function afficherNotes(){
+let notes=JSON.parse(localStorage.getItem('frejoNotes')||'[]');
+document.getElementById('notes').innerHTML=notes.map(x=>
+'<div class="card"><strong>'+escapeHTML(x.t)+'</strong><p>'+escapeHTML(x.n)+'</p></div>'
+).join('');
+}
+function escapeHTML(s){
+return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+afficherNotes();
+</script>
+</body>
+</html>
